@@ -13,3 +13,6 @@ deps:
 
 type-check:
 	mypy --config-file "./mypy.ini" traceroute.py
+
+lint:
+	ruff check
