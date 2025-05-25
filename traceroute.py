@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, TypeAlias
 from scapy.layers.inet import IP, ICMP
 from scapy.sendrecv import sr1
 import sys
@@ -18,7 +18,7 @@ class Measurement:
     def __repr__(self) -> str:
         return f"IP: {self.ip} | RTT: {self.rtt} | TTL: {self.ttl}"
 
-type Measurements = list[Measurement]
+Measurements: TypeAlias = list[Measurement]
 
 def signal_handler(_x: Any, _y: Any) -> None:
     sys.exit(0)
