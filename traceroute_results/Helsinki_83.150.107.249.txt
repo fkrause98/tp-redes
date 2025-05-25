@@ -1,0 +1,17 @@
+Begin emission
+
+Finished sending 1 packets
+Begin emission
+
+Finished sending 1 packets
+Begin emission
+
+Finished sending 1 packets
+Starting traceroute... Press Ctrl-C to stop
+Round 1/30
+
+Received 4 packets, got 1 answers, remaining 0 packets
+ttl: 1 took 10.707378387451172 ms
+
+Received 2 packets, got 1 answers, remaining 0 packets
+ttl: 2 took 6.047964096069336 ms
