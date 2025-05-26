@@ -19,3 +19,9 @@ make deps
 chmod +x traceroute.py
 sudo $(which python3) ./traceroute.py 157.92.0.1
 ```
+## Mediciones
+
+Para tomar mediciones, se usa el script ```test.sh```, mediante:
+```bash
+make measurements
+```

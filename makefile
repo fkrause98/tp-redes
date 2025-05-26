@@ -1,9 +1,6 @@
-.PHONY: type-check env
+.PHONY: type-check env measurements
 
-PYTHON := $(shell command -v python3 || command -v python)
-
-check-python:
-	@test -n "$(PYTHON)" || (echo "Error: No Python executable found" && exit 1)
+PYTHON := $(shell which python3)
 
 virtualenv:
 	$(PYTHON) -m venv ./virtualenv
@@ -16,3 +13,6 @@ type-check:
 
 lint:
 	ruff check
+
+measurements:
+	sudo ./test.sh
