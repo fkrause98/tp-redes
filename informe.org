@@ -1,10 +1,36 @@
-#+title: Informe
+#+title: Detección de enlaces mediante traceroute
+#+author: Francisco Krause Arnim - LU: 99/19
 #+LaTeX_CLASS: article
 #+OPTIONS: toc:nil
 #+LATEX_HEADER: \usepackage{ebgaramond}
 #+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usepackage{parskip}
-#+STARTUP: nolatexpreview
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{colorlinks=true,urlcolor=blue,linkcolor=black}
 
+* Introducción
+En este trabajo práctico, estudiaremos si es posible detectar enlaces interoceánicos basándonos únicamente
+en la medición de los /RTT/[fn:1] (round-trip-time, en castellano: "el tiempo de ida y vuelta"). Para obtener estos /RTT/,
+vamos a imitar el funcionamiento de la herramienta unix /traceroute/[fn:2]. Dicho funcionamiento consiste en aprovechar
+el hecho de que en cada paquete del protocolo /IP/[fn:3] hay un campo llamado /TTL/ que limita cuántos saltos
+entre enlaces puede dar un paquete. Si este llega a \(0\), el paquete debe descartarse y el enlace retornar un mensaje
+/ICMP/[fn:5] (que forma parte de /IP/) de tipo \(11\) (Time Exceeded) a la dirección /IP/ original que, al igual que /TTL/, es un
+campo de cada paquete del protocolo /IP/. Una vez obtenidos los resultados, se procederá a compararlos con
+bases de datos y herramientas que contienen información que relaciona una /IP/ dada a su ubicación.
+Finalmente, usaremos como caso de estudio direcciones /IP/ de \(5\) universidades en distintos continentes:
 
-* Test
+1. Stanford, Estados Unidos.
+2. MIT, Estados Unidos.
+3. Universidad de Beijing (o Peking), China.
+4. Universidad de Melbourne, Australia.
+5. Universidad de Helsinki, Finlandia.
+
+* Footnotes
+
+[fn:5][[https://datatracker.ietf.org/doc/html/rfc792][ RFC792]]
+
+[fn:3] [[https://datatracker.ietf.org/doc/html/rfc791][RFC791]]
+
+[fn:2] [[https://linux.die.net/man/8/traceroute][Traceroute man page]]
+
+[fn:1] [[https://en.wikipedia.org/wiki/Round-trip_delay][Wikipedia: RTT]]
