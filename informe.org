@@ -1,0 +1,10 @@
+#+title: Informe
+#+LaTeX_CLASS: article
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage{ebgaramond}
+#+LATEX_HEADER: \usepackage{pgfplots}
+#+LATEX_HEADER: \usepackage{parskip}
+#+STARTUP: nolatexpreview
+
+
+* Test
