@@ -27,7 +27,6 @@ def trace_route(max_ttl: int = 25, times: int = 30, expect_time_exceeded: bool =
     responses: Dict[int, Measurements] = {}
     try:
         for i in range(times):
-            print(f"Round {i+1}/{times}")
             for ttl in range(1, max_ttl):
                 probe = IP(dst=dst, ttl=ttl) / ICMP()
                 t_i = time()
@@ -80,7 +79,8 @@ def averages_for_ttls(data: dict[int, Measurements], ttls: int) -> Dict[int, Mea
             averages[ttl] = Measurement(m.ip, avg_rtt, ttl, m.msg_type)
     return averages
 
-def print_in_between_diffs(averages: Dict[int, Measurement], ttls: int) -> None:
+def get_ttl_diffs(averages: Dict[int, Measurement], ttls: int) -> None:
+    diffs = []
     for ttl in range(1, ttls):
         if ttl in averages and ttl+1 in averages:
             for ttl_2 in range(ttl+1, ttls):
@@ -88,7 +88,7 @@ def print_in_between_diffs(averages: Dict[int, Measurement], ttls: int) -> None:
                     m_1 = averages[ttl]
                     m_2 = averages[ttl_2]
                     diff = m_1.rtt - m_2.rtt
-                    pprint.pp(f"RTT between {m_1.ip} (TTL={ttl}) and {m_2.ip} (TTL={ttl_2}): {diff}")
+                    diffs.append(f"RTT between {m_1.ip} (TTL={ttl}) and {m_2.ip} (TTL={ttl_2}): {diff}")
                     break
 
 if __name__ == "__main__":
@@ -109,4 +109,4 @@ if __name__ == "__main__":
 
     ttl_to_ips_and_times = keep_relevant_ips_by_ttl(responses, ttls)
     averages = averages_for_ttls(ttl_to_ips_and_times, ttls)
-    print_in_between_diffs(averages, ttls)
+    get_ttl_diffs(averages, ttls)

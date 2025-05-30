@@ -6,7 +6,10 @@
 #+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usepackage{parskip}
 #+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{minted}
 #+LATEX_HEADER: \hypersetup{colorlinks=true,urlcolor=blue,linkcolor=black}
+
 
 * Introducción
 En este trabajo práctico, estudiaremos si es posible detectar enlaces interoceánicos basándonos únicamente
@@ -25,7 +28,63 @@ Finalmente, usaremos como caso de estudio direcciones /IP/ de \(5\) universidade
 4. Universidad de Melbourne, Australia.
 5. Universidad de Helsinki, Finlandia.
 
+* Experimentación
+** Código
+*** Traceroute
+El código que se utiliza en esta experimentación (que se encuentra bajo /traceroute.py/) es Python,
+más en particular, aprovechamos la dependencia /scapy[fn:4]/. Simplificando y obviando boilerplate, el código que se encarga de mandar y recibir mensajes es el siguiente:
+#+begin_src python
+# max_ttl: el ttl máximo que se usará en el loop.
+# times: cuántas muestras por ttl se tomarán.
+# dst: ip de destino
+def trace_route(max_ttl, times, dst):
+    responses = {}
+    for i in range(times):
+        for ttl in range(1, max_ttl):
+            # Objeto IP de scapy
+            probe = IP(dst=dst, ttl=ttl) / ICMP()
+            t_i = time()
+            # Función que manda y recibe paquetes
+            ans = sr1(probe, verbose=False, timeout=5)
+            t_f = time()
+            rtt = (t_f - t_i)*1000
+            if ans[ICMP].type == 11:
+                responses[ttl] = []
+                responses[ttl].append(
+                    Measurement(
+                        ip=ans.src,
+                        ttl=ttl,
+                        rtt=rtt,
+                        msg_type=11
+                ))
+    return responses
+#+end_src
+La idea es que vamos enviando paquetes a la IP de destino con TTLs
+incrementales, arrancamos desde \(ttl = 0\) hasta el valor \(ttl = max\), si la
+respuesta ICMP que recibimos es de tipo \(11\), nos guardamos la /IP/ del enlace que
+respondió, el /ttl/ asociado y cuándo se tardó en recibir una respuesta el /rtt/, el cual
+termina siendo medido en segundos, pues la función time[fn:6] devuelve la cantidad de segundos
+transcurridos desde la Unix Epoch[fn:7].
+Repetimos el proceso tantas veces como lo indique la variable /times/. Esto se
+debe que para un mismo /ttl/ podemos tener varias IPs que nos respondan, ya que
+es imposible predecir con certeza qué camino tomarán los paquetes que envíemos.
+Una vez este código termina, nos devuelve un diccionario que asocia un valor de /ttl/
+con una lista de muestras obtenidas.
+
+*** Filtro de muestras.
+Para filtrar y procesar lo obtenido, utilizamos 3 funciones más que toman la IP que haya
+respondido más veces por cada TTL, toma el promedio de las mediciones y calcula la diferencia
+entre cada par \(TTL_{i}\) y \(TTL_{i+1}\).
+
+** Universidades de Ejemplo
+
+
+
 * Footnotes
+[fn:7] https://developer.mozilla.org/en-US/docs/Glossary/Unix_time
+
+[fn:6] https://docs.python.org/3/library/time.html#time.time
+[fn:4] https://scapy.net
 
 [fn:5][[https://datatracker.ietf.org/doc/html/rfc792][ RFC792]]
 
@@ -34,3 +93,4 @@ Finalmente, usaremos como caso de estudio direcciones /IP/ de \(5\) universidade
 [fn:2] [[https://linux.die.net/man/8/traceroute][Traceroute man page]]
 
 [fn:1] [[https://en.wikipedia.org/wiki/Round-trip_delay][Wikipedia: RTT]]
+
